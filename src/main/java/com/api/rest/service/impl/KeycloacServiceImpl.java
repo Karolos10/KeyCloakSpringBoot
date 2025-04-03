@@ -6,12 +6,14 @@ import com.api.rest.util.KeycloackProvider;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.lang.NonNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class KeycloacServiceImpl implements IKeycloakService {
@@ -106,13 +108,39 @@ public class KeycloacServiceImpl implements IKeycloakService {
 
     }
 
+    /*     * Metodo para eliminar un usuario por su id
+     * @return void
+     */
     @Override
     public void deleteUser(String userId) {
+        KeycloackProvider.getUserResource()
+                .get(userId)
+                .remove();
 
     }
 
+    /*     * Metodo para actualizar un usuario por su id
+     * @return void
+     */
     @Override
-    public void updateUser(String userId, UserDTO userDTO) {
+    public void updateUser(String userId, @NonNull UserDTO userDTO) {
 
+        CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
+
+        credentialRepresentation.setTemporary(false);
+        credentialRepresentation.setType(OAuth2Constants.PASSWORD);
+        credentialRepresentation.setValue(userDTO.getPassword());
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setFirstName(userDTO.getFirstName());
+        userRepresentation.setLastName(userDTO.getLastName());
+        userRepresentation.setEmail(userDTO.getEmail());
+        userRepresentation.setUsername(userDTO.getUsername());
+        userRepresentation.setEmailVerified(true);
+        userRepresentation.setEnabled(true);
+        userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
+
+        UserResource userResource = KeycloackProvider.getUserResource().get(userId);
+        userResource.update(userRepresentation);
     }
 }
