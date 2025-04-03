@@ -2,6 +2,7 @@ package com.api.rest.service;
 
 import com.api.rest.controller.dato.UserDTO;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
