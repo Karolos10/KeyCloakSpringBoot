@@ -4,6 +4,8 @@ import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 
 public class KeycloackProvider {
 
@@ -29,5 +31,10 @@ public class KeycloackProvider {
                 .build();
 
         return keycloak.realm(REALM_NAME);
+    }
+
+    public static UsersResource getUserResource(){
+        RealmResource realmResource = getRealmResource();
+        return realmResource.users();
     }
 }
